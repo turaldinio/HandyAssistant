@@ -11,7 +11,6 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
         System.out.println("server is running");
-        Server server = new Server();
 
         try (ServerSocket serverSocket = new ServerSocket(8089)) {
             while (true) {
