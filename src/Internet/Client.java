@@ -1,4 +1,4 @@
-package Client;
+package Internet;
 
 import HelperClasses.ConsoleHelper;
 
