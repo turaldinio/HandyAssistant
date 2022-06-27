@@ -1,15 +1,12 @@
 package Internet;
 
 import HelperClasses.ConsoleHelper;
-import HelperClasses.ObjectStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
@@ -25,26 +22,36 @@ public class Client {
 
             while (!clientSocket.isClosed()) {
 
-                while (reader.ready()) {
-                    System.out.println(reader.readLine());
-                }
+                System.out.println(reader.readLine());
+                System.out.println(reader.readLine());
+                System.out.println(reader.readLine());
+                System.out.println(reader.readLine());
+                System.out.println(reader.readLine());
+                System.out.println(reader.readLine());
 
-                if (ObjectStatus.isWaitResponse()) {
-                    System.out.println("пиши");
+//                while (reader.ready()) {
+//                    System.out.println(reader.readLine());
+//                }
+
+                String number = scan.nextLine();
+
+
+                printWriter.println(number);
+
+                if (number.equals("1")) {
+                    System.out.println(reader.readLine());
+                    System.out.println(reader.readLine());
+
                     printWriter.println(scan.nextLine());
+
+                    System.out.println(reader.readLine());
+
+
                 }
-                else {
-                    Thread.sleep(1000);
-                }
-                System.out.println("пош на след кург"+" "+ObjectStatus.isWaitResponse());
 
             }
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
