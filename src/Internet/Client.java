@@ -1,6 +1,7 @@
 package Internet;
 
 import HelperClasses.ConsoleHelper;
+import HelperClasses.ObjectStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,16 +23,28 @@ public class Client {
             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-            while (reader.ready()) {
-                System.out.println(reader.readLine());
+            while (!clientSocket.isClosed()) {
+
+                while (reader.ready()) {
+                    System.out.println(reader.readLine());
+                }
+
+                if (ObjectStatus.isWaitResponse()) {
+                    System.out.println("пиши");
+                    printWriter.println(scan.nextLine());
+                }
+                else {
+                    Thread.sleep(1000);
+                }
+                System.out.println("пош на след кург"+" "+ObjectStatus.isWaitResponse());
+
             }
-
-            printWriter.println(scan.nextInt());
-
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

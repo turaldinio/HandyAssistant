@@ -1,7 +1,8 @@
 package Internet;
 
-import HelperClasses.Citys;
+import HelperClasses.City;
 import HelperClasses.ConsoleHelper;
+import HelperClasses.ObjectStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,61 +10,135 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Server {
+
+    public static boolean waitResponse = false;
 
     public static void main(String[] args) throws IOException {
         ConsoleHelper.writeMessage("Сервер запущен");
 
-        try (ServerSocket serverSocket = new ServerSocket(8089)) {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                printWriter.println("Добро пожаловать на сервер-помощник");
-                printWriter.println("Чем вам помочь?");
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                try (Socket clientSocket = new Socket("netology.homework", 8089)) {
 
-                while (true) {
+                    ConsoleHelper.writeMessage("Соединение с сервером установлено");
 
-                    printWriter.println("1. Прогноз погоды");
-                    printWriter.println("2. Текущая дата");
-                    printWriter.println("3. Скачать картинку дня");
-                    printWriter.println("Для выхода укажите любой другой номер");
+                    Scanner scan = new Scanner(System.in);
+                    PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                    int response = Integer.parseInt(reader.readLine());
+                    while (!clientSocket.isClosed()) {
 
-                    switch (response) {
-                        case 1:
-                            currentWeather(printWriter, reader);
-                            break;
-                        case 2:
+                        while (reader.ready()) {
+                            System.out.println(reader.readLine());
+                        }
 
-                            break;
-                        case 3:
-                            break;
-                        default:
-                            break;
+                        if (Server.isWaitResponse()) {
+                            System.out.println("пиши");
+                            printWriter.println(scan.nextLine());
+                        } else {
+                            Thread.sleep(1000);
+                        }
+                        System.out.println("пош на след кург" + " " + ObjectStatus.isWaitResponse());
+
                     }
 
+
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
+        }).start();
+
+        try (ServerSocket serverSocket = new ServerSocket(8089)) {
+
+            Socket clientSocket = serverSocket.accept();
+            PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+
+            printWriter.println("Добро пожаловать на сервер-помощник");
+            printWriter.println("Чем вам помочь?");
+
+
+            while (true) {
+
+                printWriter.println("1. Прогноз погоды");
+                printWriter.println("2. Текущая дата");
+                printWriter.println("3. Скачать картинку дня");
+                printWriter.println("Для выхода укажите любой другой номер");
+
+
+                int response = Integer.parseInt(clientMessageRead(reader));
+
+
+                switch (response) {
+                    case 1:
+                        String currentWeather = currentWeather(printWriter, reader);
+                        if (currentWeather == null) {
+                            System.out.println("Ошибка получения данных. Проверьте корректность введенных данных или повторите запрос");
+                            break;
+                        } else {
+                            System.out.println(currentWeather);
+                        }
+
+                        break;
+                    case 2:
+
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        break;
+                }
+
+            }
         }
+
     }
 
     public static String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException {
         printWriter.println("Укажите город, для которого необходимо узнать погоду:");
-        printWriter.println(Arrays.toString(Citys.values()).replaceAll("[-]", ""));
+        printWriter.println(Arrays.toString(City.values()).replaceAll("[-]", ""));
 
-        Citys city = Citys.valueOf(reader.readLine());
+        String line = clientMessageRead(reader);
+
+        String city = City.getCity(line);
         if (city == null) {
-            ConsoleHelper.writeMessage("Погода для данного горда недоступна");
             return null;
+
         }
-        Request.currentWeather(city);
+        return Request.currentWeather(city);
+
+
+    }
+
+    public static String clientMessageRead(BufferedReader reader) {
+        waitResponse = true;
+        try {
+            String line = reader.readLine();
+            waitResponse = false;
+            return line;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
+
+    public static boolean isWaitResponse() {
+        return waitResponse;
+    }
+
 
 }
