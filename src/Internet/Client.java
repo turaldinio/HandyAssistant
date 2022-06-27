@@ -14,24 +14,21 @@ public class Client {
     public static void main(String[] args) {
         try (Socket clientSocket = new Socket("netology.homework", 8089)) {
 
-            ConsoleHelper.writeMessage("Соединение с сервером установлено");
-
             Scanner scan = new Scanner(System.in);
             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            System.out.println(reader.readLine());
+            System.out.println(reader.readLine());
+
             while (!clientSocket.isClosed()) {
 
-                System.out.println(reader.readLine());
-                System.out.println(reader.readLine());
+
                 System.out.println(reader.readLine());
                 System.out.println(reader.readLine());
                 System.out.println(reader.readLine());
                 System.out.println(reader.readLine());
 
-//                while (reader.ready()) {
-//                    System.out.println(reader.readLine());
-//                }
 
                 String number = scan.nextLine();
 
@@ -45,7 +42,11 @@ public class Client {
                     printWriter.println(scan.nextLine());
 
                     System.out.println(reader.readLine());
-
+                }
+                if (number.equals("2")) {
+                    System.out.println(reader.readLine());
+                    System.out.println(reader.readLine());
+                    System.out.println(reader.readLine());
 
                 }
 

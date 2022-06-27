@@ -1,5 +1,6 @@
 package Internet;
 
+import Exceptions.CityNotFoundException;
 import HelperClasses.City;
 
 import java.io.BufferedReader;
@@ -12,9 +13,8 @@ import java.util.Arrays;
 
 public class Server {
 
-    public static boolean waitResponse = false;
-
     public static void main(String[] args) throws IOException {
+        System.out.println("Сервер запущен");
 
         try (ServerSocket serverSocket = new ServerSocket(8089);
 
@@ -30,7 +30,7 @@ public class Server {
             while (true) {
 
                 printWriter.println("1. Прогноз погоды");
-                printWriter.println("2. Текущая дата");
+                printWriter.println("2. Получить случайный совет");
                 printWriter.println("3. Скачать картинку дня");
                 printWriter.println("Для выхода укажите любой другой номер");
 
@@ -39,13 +39,18 @@ public class Server {
 
                 switch (response) {
                     case 1:
-                        String currentWeather = currentWeather(printWriter, reader);
+                        try {
+                            String currentWeather = currentWeather(printWriter, reader);
+                            printWriter.println(currentWeather);
+                        } catch (CityNotFoundException c) {
+                            printWriter.println(c.getMessage());
+                        }
 
-                        printWriter.println(currentWeather);
                         break;
 
                     case 2:
-
+                        String advice = getAdviceOfTheDay(printWriter);
+                        printWriter.println(advice);
                         break;
                     case 3:
                         break;
@@ -58,7 +63,7 @@ public class Server {
 
     }
 
-    public static String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException {
+    public static String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException, CityNotFoundException {
         printWriter.println("Укажите город, для которого необходимо узнать погоду:");
         printWriter.println(Arrays.toString(City.values()).replaceAll("[-]", ""));
 
@@ -67,7 +72,7 @@ public class Server {
 
         String city = City.getCity(line);
         if (city == null) {
-            return null;
+            throw new CityNotFoundException("Ошибка! Проверьте корректность названия города");
 
         }
         return Request.currentWeather(city);
@@ -75,20 +80,10 @@ public class Server {
 
     }
 
-//    public static String clientMessageRead(BufferedReader reader) {
-//        waitResponse = true;
-//        try {
-//            String line = reader.readLine();
-//            waitResponse = false;
-//            return line;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    public static String getAdviceOfTheDay(PrintWriter printWriter) throws IOException {
+        printWriter.println("Совет для вас:");
 
-    public static boolean isWaitResponse() {
-        return waitResponse;
+        return Request.getAdviceOfTheDay();
     }
 
 
