@@ -13,7 +13,11 @@ import java.util.Arrays;
 
 public class Server {
 
+    private final Request request = new Request();
+
+
     public static void main(String[] args) throws IOException {
+        Server server = new Server();
         System.out.println("Сервер запущен");
 
         try (ServerSocket serverSocket = new ServerSocket(8089);
@@ -38,7 +42,7 @@ public class Server {
             switch (response) {
                 case 1:
                     try {
-                        String currentWeather = currentWeather(printWriter, reader);
+                        String currentWeather = server.currentWeather(printWriter, reader);
                         printWriter.println(currentWeather);
                     } catch (CityNotFoundException c) {
                         printWriter.println(c.getMessage());
@@ -48,7 +52,7 @@ public class Server {
 
                 case 2:
                     try {
-                        String advice = getAdviceOfTheDay(printWriter);
+                        String advice = server.getAdviceOfTheDay(printWriter);
                         printWriter.println(advice);
                     } catch (IOException a) {
                         printWriter.println("Что-то пошло не так. Повторите попытку");
@@ -64,9 +68,13 @@ public class Server {
     }
 
 
-    public static String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException, CityNotFoundException {
+    public String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException, CityNotFoundException {
         printWriter.println("Укажите город, для которого необходимо узнать погоду:");
-        printWriter.println(Arrays.toString(City.values()).replaceAll("[-]", ""));
+
+        for (int a = 0; a < City.values().length; a++) {
+            printWriter.println(City.values()[a]);
+        }
+
 
         String line = reader.readLine();
 
@@ -76,15 +84,15 @@ public class Server {
             throw new CityNotFoundException("Ошибка! Проверьте корректность названия города");
 
         }
-        return Request.currentWeather(city);
+        return request.currentWeather(city);
 
 
     }
 
-    public static String getAdviceOfTheDay(PrintWriter printWriter) throws IOException {
+    public String getAdviceOfTheDay(PrintWriter printWriter) throws IOException {
         printWriter.println("Совет для вас:");
 
-        return Request.getAdviceOfTheDay();
+        return request.getAdviceOfTheDay();
     }
 
 

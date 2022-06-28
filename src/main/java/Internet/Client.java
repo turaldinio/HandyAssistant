@@ -1,5 +1,6 @@
 package Internet;
 
+import HelperClasses.City;
 import HelperClasses.ConsoleHelper;
 
 import java.io.BufferedReader;
@@ -35,10 +36,14 @@ public class Client {
 
             if (number.equals("1")) {
                 System.out.println(reader.readLine());
-                System.out.println(reader.readLine());
+
+                for (int a = 0; a < City.values().length; a++) {
+                    System.out.println(reader.readLine());
+                }
 
                 printWriter.println(scan.nextLine());
 
+                System.out.println(reader.readLine());
                 System.out.println(reader.readLine());
             }
             if (number.equals("2")) {
