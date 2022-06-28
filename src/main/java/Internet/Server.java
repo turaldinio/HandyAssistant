@@ -27,41 +27,42 @@ public class Server {
             printWriter.println("Чем вам помочь?");
 
 
-            while (true) {
-
-                printWriter.println("1. Прогноз погоды");
-                printWriter.println("2. Получить случайный совет");
-                printWriter.println("3. Скачать картинку дня");
-                printWriter.println("Для выхода укажите любой другой номер");
+            printWriter.println("1. Прогноз погоды");
+            printWriter.println("2. Получить случайный совет");
+            printWriter.println("3. Скачать картинку дня");
+            printWriter.println("Для выхода укажите любой другой номер");
 
 
-                int response = Integer.parseInt(reader.readLine());
+            int response = Integer.parseInt(reader.readLine());
 
-                switch (response) {
-                    case 1:
-                        try {
-                            String currentWeather = currentWeather(printWriter, reader);
-                            printWriter.println(currentWeather);
-                        } catch (CityNotFoundException c) {
-                            printWriter.println(c.getMessage());
-                        }
+            switch (response) {
+                case 1:
+                    try {
+                        String currentWeather = currentWeather(printWriter, reader);
+                        printWriter.println(currentWeather);
+                    } catch (CityNotFoundException c) {
+                        printWriter.println(c.getMessage());
+                    }
 
-                        break;
+                    break;
 
-                    case 2:
+                case 2:
+                    try {
                         String advice = getAdviceOfTheDay(printWriter);
                         printWriter.println(advice);
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        break;
-                }
-
+                    } catch (IOException a) {
+                        printWriter.println("Что-то пошло не так. Повторите попытку");
+                    }
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
             }
-        }
 
+        }
     }
+
 
     public static String currentWeather(PrintWriter printWriter, BufferedReader reader) throws IOException, CityNotFoundException {
         printWriter.println("Укажите город, для которого необходимо узнать погоду:");

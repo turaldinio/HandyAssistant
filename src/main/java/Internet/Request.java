@@ -24,6 +24,7 @@ public class Request {
                     "Chrome/100.0.4896.160 YaBrowser/22.5.3.705 Yowser/2.5 Safari/537.36")
             .setDefaultRequestConfig(RequestConfig.custom()
                     .setCookieSpec(CookieSpecs.STANDARD)
+                    .setConnectTimeout(5000)
                     .setRedirectsEnabled(true)
                     .build())
             .build();
@@ -56,18 +57,15 @@ public class Request {
 
         Document document = Jsoup.parse(line);
 
-        String advice = document.getElementsByTag("h2").toString();
+        String advice = Jsoup.parse(document.getElementsByTag("h2").toString()).text();
+        String author = Jsoup.parse(document.getElementsByTag("h4").toString()).text();
 
-        String author = document.getElementsByTag("h4").toString();
-
-        String substringAdvice = advice.substring(advice.indexOf(">") + 1, advice.lastIndexOf("<"));
 
         if (author.length() == 0) {
-            return substringAdvice;
+            return advice.trim();
         }
-        String substringAuthor = author.substring(author.indexOf(">") + 1, author.lastIndexOf("<"));
 
-        return substringAdvice + "\n" + substringAuthor;
+        return advice + "(" + author + ")".trim();
     }
 
 
