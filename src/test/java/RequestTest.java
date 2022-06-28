@@ -1,4 +1,4 @@
-import HelperClasses.City;
+import Enum.City;
 import Internet.Request;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;

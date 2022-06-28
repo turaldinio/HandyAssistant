@@ -1,7 +1,6 @@
 package Internet;
 
-import HelperClasses.City;
-import HelperClasses.ConsoleHelper;
+import Enum.City;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +12,16 @@ import java.util.Scanner;
 public class Client {
 
     public static void main(String[] args) {
-        try (Socket clientSocket = new Socket("netology.homework", 8089)) {
+        try (Socket clientSocket = new Socket("netology.homework", 8089);
 
-            Scanner scan = new Scanner(System.in);
-            PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            System.out.println(reader.readLine());
-            System.out.println(reader.readLine());
-
+             Scanner scan = new Scanner(System.in);
+             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
             System.out.println(reader.readLine());
+            System.out.println(reader.readLine());
+
+
             System.out.println(reader.readLine());
             System.out.println(reader.readLine());
             System.out.println(reader.readLine());
@@ -49,8 +47,10 @@ public class Client {
             if (number.equals("2")) {
                 System.out.println(reader.readLine());
                 System.out.println(reader.readLine());
+            }
 
-
+            if (!number.equals("1") && !number.equals("2")) {
+                System.out.println(reader.readLine());
             }
 
         } catch (IOException e) {

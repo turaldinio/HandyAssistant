@@ -1,7 +1,7 @@
 package Internet;
 
 import Exceptions.CityNotFoundException;
-import HelperClasses.City;
+import Enum.City;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Server {
 
@@ -33,7 +32,6 @@ public class Server {
 
             printWriter.println("1. Прогноз погоды");
             printWriter.println("2. Получить случайный совет");
-            printWriter.println("3. Скачать картинку дня");
             printWriter.println("Для выхода укажите любой другой номер");
 
 
@@ -44,6 +42,7 @@ public class Server {
                     try {
                         String currentWeather = server.currentWeather(printWriter, reader);
                         printWriter.println(currentWeather);
+                        printWriter.println("Check the correctness of the city name");
                     } catch (CityNotFoundException c) {
                         printWriter.println(c.getMessage());
                     }
@@ -58,9 +57,8 @@ public class Server {
                         printWriter.println("Что-то пошло не так. Повторите попытку");
                     }
                     break;
-                case 3:
-                    break;
                 default:
+                    printWriter.println("До свидания ");
                     break;
             }
 
