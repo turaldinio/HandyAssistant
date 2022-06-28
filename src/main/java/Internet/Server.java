@@ -42,9 +42,10 @@ public class Server {
                     try {
                         String currentWeather = server.currentWeather(printWriter, reader);
                         printWriter.println(currentWeather);
-                        printWriter.println("Check the correctness of the city name");
                     } catch (CityNotFoundException c) {
                         printWriter.println(c.getMessage());
+                        printWriter.println("Check the correctness of the city name");
+
                     }
 
                     break;
@@ -92,6 +93,4 @@ public class Server {
 
         return request.getAdviceOfTheDay();
     }
-
-
 }
